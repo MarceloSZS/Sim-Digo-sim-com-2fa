@@ -7,7 +7,7 @@
   <title>Login</title>
   <link rel="stylesheet" href="CSS/login.css">
   <link rel="shortcut icon" href="Favicon/Anel pintado.png" type="image/x-icon">
-  <script src="./JS/script_login.js" defer></script>
+  <script src="JS/script_login.js" defer></script>
   <style>
     @font-face {
       font-family: poppins;

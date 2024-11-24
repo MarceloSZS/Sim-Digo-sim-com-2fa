@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('forms');
     const mensagemErro = document.getElementById('mensagemErro');
     const telefoneCelularInput = document.getElementById('telefoneCelular');
-    const cepInput = document.getElementById('cep');
     const cpfInput = document.getElementById('cpf');
 
     form.addEventListener('submit', async (e) => {
@@ -15,45 +14,45 @@ document.addEventListener('DOMContentLoaded', () => {
         const formData = new FormData(form);
 
         const nome = formData.get('nome')?.trim() ?? ""; 
-        const nomeMaterno = formData.get('nome materno')?.trim() ?? "";
-        const cpf = cpfInput.value.replace(/\D/g, ""); // Remove caracteres não numéricos do CPF
         const email = formData.get('email')?.trim() ?? "";
         const senha = formData.get('senha')?.trim() ?? "";
-        const senhaConfirmacao = formData.get('senha-confirmacao')?.trim() ?? "";  // Senha de confirmação
+        const senhaConfirmacao = formData.get('senha_confirmacao')?.trim() ?? "";  // Senha de confirmação
+        const estado = formData.get('estado')?.trim() ?? "";
+        const data_nascimento = formData.get('data') || "";
+        const telefoneCelular = formData.get('telefoneCelular')?.trim() ?? "";
+        const genero = formData.get('genero') ?? ""; // Sexo (use os `<option>` do select)
+        const nome_materno = formData.get('nome_materno')?.trim() ?? "";
+        const cpf = cpfInput.value.replace(/\D/g, ""); // Remove caracteres não numéricos do CPF
+        const cep = formData.get('cep')?.trim() ?? "";
         const endereco = formData.get('endereco')?.trim() ?? "";
-        const numero = formData.get('numero')?.trim() ?? "";
+        const complemento = formData.get('complemento')?.trim()??"";
         const bairro = formData.get('bairro')?.trim() ?? "";
         const cidade = formData.get('cidade')?.trim() ?? "";
-        const estado = formData.get('estado')?.trim() ?? "";
-        const cep = formData.get('cep')?.trim() ?? "";
-        const telefoneCelular = formData.get('telefoneCelular')?.trim() ?? "";
-        const sexo = formData.get('sexo') ?? ""; // Sexo (use os `<option>` do select)
-        const dataNascimento = formData.get('data') || "";
-
+       
         // Captura do checkbox dos termos (usando diretamente a verificação - checkbox requer tratamento especial)
-        const termosAceitos = form.querySelector('#termos').checked;
+        const aceitou_termos = form.querySelector('#termos').checked;
 
         // Validações de todos os campos obrigatórios
         if (!nome) showError('Nome é obrigatório.');
-        else if (!nomeMaterno) showError('Nome materno é obrigatório.');
-        else if (!cpf || !validateCPF(cpf)) showError('CPF é obrigatório e deve ser válido.');
         else if (!email) showError('E-mail é obrigatório.');
         else if (!senha) showError('Senha é obrigatória.');
         else if (senha !== senhaConfirmacao) showError('As senhas não coincidem.');
+        else if (!estado) showError('Estado é obrigatório.');
+        else if (!data_nascimento) showError('Data de Nascimento é obrigatória.');
+        else if (!telefoneCelular) showError('Número de telefone celular é obrigatório.');
+        else if (!genero) showError('Gênero deve ser selecionado.');
+        else if (!aceitou_termos) showError('Você deve aceitar os termos de uso e de privacidade.');
+        else if (!nome_materno) showError('Nome materno é obrigatório.');
+        else if (!cpf || !validateCPF(cpf)) showError('CPF é obrigatório e deve ser válido.');
+        else if (!cep) showError('CEP é obrigatório.');
         else if (!endereco) showError('Endereço é obrigatório.');
-        else if (!numero) showError('Número é obrigatório.');
+        else if (!complemento) showError('Complemento é obrigatório.');
         else if (!bairro) showError('Bairro é obrigatório.');
         else if (!cidade) showError('Cidade é obrigatória.');
-        else if (!estado) showError('Estado é obrigatório.');
-        else if (!cep) showError('CEP é obrigatório.');
-        else if (!dataNascimento) showError('Data de Nascimento é obrigatória.');
-        else if (!telefoneCelular) showError('Número de telefone celular é obrigatório.');
-        else if (!sexo) showError('Sexo deve ser selecionado.');
-        else if (!termosAceitos) showError('Você deve aceitar os termos de uso e de privacidade.');
         else {
             try {
                 // Envia a requisição para o servidor com os dados do formulário corrigidos
-                const response = await fetch('./PHP/processa_cadastro.php', {
+                const response = await fetch('PHP/processa_cadastro.php', {
                     method: 'POST',
                     body: formData
                 });
@@ -64,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (result.includes ("Erro ao cadastrar")) {
                         showError(result);
                     } else {
-                        window.location.href = '../login'; // Redireciona para a página de login
+                        window.location.href = 'login.php'; // Redireciona para a página de login
                     }
                 } else {
                     showError("Ocorreu um erro ao processar o cadastro.");
@@ -98,37 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
         mensagemErro.style.display = 'block';
     }
 });
-
-// Função de busca de endereço com CEP
-function buscarEndereco() {
-    const cep = document.getElementById("cep").value;
-    if (cep.length === 9) { // Verifica se o CEP tem 9 caracteres (incluindo o hífen)
-        fetch(`https://viacep.com.br/ws/${cep.value}/json/`)
-            .then(response => response.json())
-            .then(data => {
-                if (!data.erro) {
-                    // Preenche os campos com os dados retornados
-                    document.getElementById("endereco").value = data.logradouro || "";
-                    document.getElementById("bairro").value = data.bairro || "";
-                    document.getElementById("cidade").value = data.localidade || "";
-                    document.getElementById("estado").value = data.uf || "";
-                } else {
-                    alert("CEP inválido!");
-                    document.getElementById("cep").focus(); // Foco no campo de CEP
-                }
-            })
-            .catch(error => {
-                console.error("Erro ao buscar CEP:", error);
-                alert("Erro ao buscar o CEP. Tente novamente.");
-                document.getElementById("cep").focus(); // Foco no campo de CEP em caso de erro
-            });
-    } else {
-        alert("O CEP deve conter 9 caracteres (com hífen)!");
-        document.getElementById("cep").focus(); // Foco no campo de CEP
-    }
-}
-
-
 
 // Função de formatação e validação do CPF com mensagem visual
 function handleCPFInput(event) {

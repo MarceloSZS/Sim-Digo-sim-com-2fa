@@ -64,20 +64,26 @@
 
             <!-- Confirmação de Senha -->
             <div class="form-group">
-                <label for="senha-confirmacao">Confirme sua senha:</label>
-                <input type="password" id="senha-confirmacao" name="senha_confirmacao" placeholder="Repita sua senha" required>
+                <label for="senha_confirmacao">Confirme sua senha:</label>
+                <input type="password" id="senha_confirmacao" name="senha_confirmacao" placeholder="Repita sua senha" required>
             </div>
 
             <!-- CEP -->
             <div class="form-group">
                 <label for="cep">CEP:</label>
-                <input type="text" id="cep" name="cep" maxlength="9" onblur="buscarEndereco()" required>
+                <input type="text" id="cep" name="cep" maxlength="9"  required>
             </div>
 
             <!-- Endereço -->
             <div class="form-group">
                 <label for="endereco">Endereço:</label>
                 <input type="text" id="endereco" name="endereco" placeholder="Rua, avenida, etc." required>
+            </div>
+
+            <!-- Complemento -->
+            <div class="form-group">
+                <label for="complemento">complemento:</label>
+                <input type="text" id="complemento" name="complemento" placeholder="Casa 1, etc." required>
             </div>
 
             <!-- Bairro -->
@@ -131,7 +137,7 @@
 
             <!-- Data de Casamento -->
             <div class="form-group">
-                <label for="data">Data de Casamento:</label>
+                <label for="data">Data de Nascimento:</label>
                 <input type="date" id="data" name="data" required>
             </div>
 
@@ -144,9 +150,8 @@
             <!-- Sexo -->
             <div class="form-group-full">
                 <label>Sexo:</label>
-                <select name="sexo" id="sexo" required>
-                    <option value="">Selecione</option>
-                    <option value="Masculino">Masculino</option>
+                <select name="genero" id="genero" required>
+                    <option value="Masculino" selected>Masculino</option>
                     <option value="Feminino">Feminino</option>
                     <option value="Outros">Outros</option>
                 </select>
